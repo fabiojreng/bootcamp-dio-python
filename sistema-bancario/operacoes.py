@@ -5,16 +5,16 @@ class Operacoes:
         self.__saldo: float = 0
         self.__extrato_operacoes = []
 
-    def depositar(self, valor: float) -> float | str:
+    def depositar(self, valor: float, /) -> float | str:
         if valor < 0:
             return "Erro: Não é possível depositar valor negativo"
         self.__saldo += valor
         self.__extrato_operacoes.append(
             {"Operação": "Depositar", "Valor": f"R${valor}"}
         )
-        return self.__saldo
+        return self.__saldo, self.__extrato_operacoes[-1]
 
-    def sacar(self, valor: float) -> None:
+    def sacar(self, *, valor: float) -> None:
         if valor < 0:
             return "Erro: Não é possível sacar valor negativo"
         if valor > self.__LIMITE_SAQUE:
@@ -23,10 +23,14 @@ class Operacoes:
             return "Erro: Saldo insuficiente"
         self.__saldo -= valor
         self.__extrato_operacoes.append({"Operação": "Sacar", "Valor": f"R${valor}"})
-        return self.__saldo
+        return self.__saldo, self.__extrato_operacoes[-1]
 
     def extrato(self) -> list:
-        return self.__extrato_operacoes
+        return (
+            "Sem movimentações feitas"
+            if not self.__extrato_operacoes
+            else print(self.__extrato_operacoes)
+        )
 
     def get_saldo(self) -> float:
         return self.__saldo
